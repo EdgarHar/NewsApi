@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class NewsLoaderViewModel: ViewModel() {
-    private val list: MutableLiveData<List<Article>> = MutableLiveData()
+    private val list: MutableLiveData<List<Article>> = MutableLiveData(listOf())
     private val api: NewsApi = RetrofitInstance.api
     val articleList: LiveData<List<Article>> = list
 

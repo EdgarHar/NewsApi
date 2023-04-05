@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
@@ -22,57 +23,20 @@ import com.example.newsapiapp.domain.Article
 
 class MainActivity : ComponentActivity() {
     private val newsLoader: NewsLoaderViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        newsLoader.loadNews()
-        newsLoader.articleList.observe(this) {
-            setContent {
-                ListOfArticles(list = it)
+        setContent {
+            newsLoader.loadNews()
+            Column {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    SearchBar(onSearch = { s -> Unit })
+                }
+                ListOfArticles(list = newsLoader.articleList.observeAsState().value!!)
             }
 
-
         }
     }
-
-
-@Composable
-fun NewsDisplay() {
-}
-
-
-@Composable
-fun ListOfArticles(list: List<Article>) {
-    LazyColumn {
-        items(list) {
-            DisplayArticle(article = it)
-        }
-    }
-}
-
-@Composable
-fun DisplayArticle(article: Article) {
-    Card(
-        shape = RectangleShape,
-        elevation = 4.dp,
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Column {
-            AsyncImage(
-                model = article.urlToImage,
-                contentDescription = article.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth()
-            )
-            Text(
-                text = article.title,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
-}
-
 
 }
 
