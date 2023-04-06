@@ -18,8 +18,8 @@ class NewsLoaderViewModel: ViewModel() {
 
     fun loadNews() {
         viewModelScope.launch {
-            list.postValue(api.getNews("us", "5189442ea3fd472b94ba50c569f42552")
-                .let{ mapToArticles(it) })
+            list.postValue(mapToArticles(api.getNews("us", "5189442ea3fd472b94ba50c569f42552"))
+                ?: listOf())
         }
     }
 
