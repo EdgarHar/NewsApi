@@ -11,15 +11,26 @@ import com.example.newsapiapp.domain.NewsResponse
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class NewsLoaderViewModel: ViewModel() {
+class NewsLoaderViewModel : ViewModel() {
     private val list: MutableLiveData<List<Article>> = MutableLiveData(listOf())
     private val api: NewsApi = RetrofitInstance.api
     val articleList: LiveData<List<Article>> = list
 
     fun loadNews() {
         viewModelScope.launch {
-            list.postValue(mapToArticles(api.getNews("us", "5189442ea3fd472b94ba50c569f42552"))
-                ?: listOf())
+            list.postValue(
+                mapToArticles(api.getNews("us", "5189442ea3fd472b94ba50c569f42552"))
+                    ?: listOf()
+            )
+        }
+    }
+
+    fun loadNewsWithFilter(filter: String) {
+        viewModelScope.launch {
+            list.postValue(
+                mapToArticles(api.getNews("us", filter, "5189442ea3fd472b94ba50c569f42552"))
+                    ?: listOf()
+            )
         }
     }
 

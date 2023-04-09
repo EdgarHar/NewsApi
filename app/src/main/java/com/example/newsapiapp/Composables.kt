@@ -1,6 +1,8 @@
 package com.example.newsapiapp
 
+import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,13 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.newsapiapp.domain.Article
+import com.google.gson.Gson
 
 @Composable
-fun DisplayArticle(article: Article) {
+fun DisplayArticle(navController: NavController, article: Article) {
+
     Card(
         shape = RectangleShape,
         elevation = 4.dp,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable { navController.navigate("articleDetails/${Gson().toJson(article)}") }
     ) {
         Column {
             AsyncImage(
@@ -46,10 +52,15 @@ fun DisplayArticle(article: Article) {
 }
 
 @Composable
-fun ListOfArticles(list: List<Article>) {
+fun DisplayArticleDetails(article: Article) {
+
+}
+
+@Composable
+fun ListOfArticles(list: List<Article>, navController: NavController) {
     LazyColumn {
         items(list) {
-            DisplayArticle(article = it)
+            DisplayArticle(article = it, navController = navController)
         }
     }
 }
@@ -86,28 +97,13 @@ fun FilterButton(navController: NavController) {
         Icon(
             imageVector = Icons.Filled.Settings,
             contentDescription = "Filter",
-            modifier = Modifier.padding(10.dp).background(Color.Red)
+            modifier = Modifier
+                .padding(10.dp)
+                .background(Color.Red)
         )
     }
 }
 
-@Composable
-fun FilterScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(text = "Filters", style = MaterialTheme.typography.h5)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "LOLOLOL")
-        Button(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text(text = "Apply")
-        }
-    }
-}
+
 
 
