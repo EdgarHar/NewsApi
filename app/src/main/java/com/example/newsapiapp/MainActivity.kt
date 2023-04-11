@@ -28,6 +28,9 @@ import coil.compose.AsyncImage
 import com.example.newsapiapp.ViewModel.NewsLoaderViewModel
 import com.example.newsapiapp.domain.Article
 import com.google.gson.Gson
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 class MainActivity : ComponentActivity() {
     private val newsLoader: NewsLoaderViewModel by viewModels()
@@ -55,7 +58,8 @@ class MainActivity : ComponentActivity() {
                 )
                 {
                     val articleJson =
-                        navController.previousBackStackEntry?.arguments?.getString("article")
+                        it.arguments?.getString("article")
+                            .also { URLDecoder.decode(it, StandardCharsets.UTF_8.toString()) }
                     val articleObject = Gson().fromJson(articleJson, Article::class.java)
                     DisplayArticleDetails(article = articleObject)
                 }

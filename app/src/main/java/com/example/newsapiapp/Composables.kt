@@ -1,6 +1,5 @@
 package com.example.newsapiapp
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -23,6 +21,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.newsapiapp.domain.Article
 import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun DisplayArticle(navController: NavController, article: Article) {
@@ -32,7 +32,11 @@ fun DisplayArticle(navController: NavController, article: Article) {
         elevation = 4.dp,
         modifier = Modifier
             .padding(16.dp)
-            .clickable { navController.navigate("articleDetails/${Gson().toJson(article)}") }
+            .clickable {
+                val myObjectString = Gson().toJson(article)
+                var encode = URLEncoder.encode(myObjectString, StandardCharsets.UTF_8.toString())
+                navController.navigate("articleDetails/$encode")
+            }
     ) {
         Column {
             AsyncImage(
@@ -53,7 +57,7 @@ fun DisplayArticle(navController: NavController, article: Article) {
 
 @Composable
 fun DisplayArticleDetails(article: Article) {
-
+    Text(text = article.title)
 }
 
 @Composable

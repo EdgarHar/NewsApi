@@ -1,6 +1,5 @@
 package com.example.newsapiapp.domain
 
-
 data class NewsResponse(
     val status: String?,
     val totalResults: Int?,
@@ -14,7 +13,7 @@ data class Article(
     val title: String,
     val urlToImage: String,
     val description: String,
-): java.io.Serializable
+) : java.io.Serializable
 
 data class Source(
     val id: String,
