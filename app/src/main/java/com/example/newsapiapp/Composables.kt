@@ -56,7 +56,7 @@ fun ListOfArticles(list: List<Article>) {
 fun SearchBar(onSearch: (String) -> Unit) {
     var query by remember { mutableStateOf("") }
 
-    Row {
+    Row (modifier = Modifier.fillMaxWidth()) {
         IconButton(
             onClick = { onSearch(query) },
             content = { Icon(Icons.Filled.Search, "Search") },
@@ -69,7 +69,8 @@ fun SearchBar(onSearch: (String) -> Unit) {
             placeholder = { Text("Search") },
             keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
             modifier = Modifier.fillMaxWidth().padding(10.dp),
-            shape = RoundedCornerShape(100.dp)
+            shape = RoundedCornerShape(100.dp),
+            singleLine = true
         )
     }
 }

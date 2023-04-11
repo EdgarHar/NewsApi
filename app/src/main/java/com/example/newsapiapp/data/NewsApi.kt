@@ -1,4 +1,4 @@
-package com.example.newsapiapp.Data
+package com.example.newsapiapp.data
 
 import com.example.newsapiapp.domain.NewsResponse
 import retrofit2.Response
