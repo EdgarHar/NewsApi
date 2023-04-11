@@ -59,9 +59,9 @@ class MainActivity : ComponentActivity() {
                 {
                     val articleJson =
                         it.arguments?.getString("article")
-                            .also { URLDecoder.decode(it, StandardCharsets.UTF_8.toString()) }
+                            .let { URLDecoder.decode(it, StandardCharsets.UTF_8.toString()) }
                     val articleObject = Gson().fromJson(articleJson, Article::class.java)
-                    DisplayArticleDetails(article = articleObject)
+                    DisplayArticleDetails(article = articleObject, navController = navController)
                 }
             }
         }
