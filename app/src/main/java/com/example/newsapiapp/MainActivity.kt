@@ -6,20 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -27,12 +18,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import coil.compose.AsyncImage
 import com.example.newsapiapp.ViewModel.NewsLoaderViewModel
 import com.example.newsapiapp.domain.Article
 import com.google.gson.Gson
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 class MainActivity : ComponentActivity() {
@@ -97,10 +86,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 ListOfArticles(
-                    list = newsLoader.articleList.observeAsState().value!!,
+                    list = newsLoader.list.observeAsState().value!!,
                     navController = navController
                 )
-                ListOfArticles(list = newsLoader.list.observeAsState().value!!)
+                ListOfArticles(list = newsLoader.list.observeAsState().value!!, navController = navController)
             }
         }
     }

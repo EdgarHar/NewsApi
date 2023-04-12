@@ -68,10 +68,11 @@ fun DisplayArticleDetails(article: Article, navController: NavController) {
                 .height(50.dp)
                 .background(Color.DarkGray)
         ) {
-            Button(onClick = { navController.popBackStack()}) {
+            Button(onClick = { navController.popBackStack() }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back")
+                    contentDescription = "Back"
+                )
             }
         }
 
@@ -138,23 +139,24 @@ fun SearchBar(onSearch: (String) -> Unit, onFilterClick: () -> Unit) {
             .fillMaxWidth()
     ) {
 
-    Row(modifier = Modifier.fillMaxWidth()) {
-        IconButton(
-            onClick = { onSearch(query) },
-            content = { Icon(Icons.Filled.Search, "Search") },
-            modifier = Modifier.padding(10.dp)
-        )
-        TextField(
-            value = query,
-            onValueChange = { query = it },
-            placeholder = { Text("Search") },
-            keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            shape = RoundedCornerShape(100.dp),
-            singleLine = true
-        )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            IconButton(
+                onClick = { onSearch(query) },
+                content = { Icon(Icons.Filled.Search, "Search") },
+                modifier = Modifier.padding(10.dp)
+            )
+            TextField(
+                value = query,
+                onValueChange = { query = it },
+                placeholder = { Text("Search") },
+                keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                shape = RoundedCornerShape(100.dp),
+                singleLine = true
+            )
+        }
     }
 }
 
@@ -170,10 +172,6 @@ fun FilterButton(navController: NavController) {
         )
     }
 }
-
-
-
-
 
 
 @Composable
