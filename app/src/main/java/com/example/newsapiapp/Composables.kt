@@ -1,17 +1,15 @@
 package com.example.newsapiapp
 
-import android.graphics.drawable.Icon
-import android.inputmethodservice.Keyboard
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -56,7 +54,8 @@ fun ListOfArticles(list: List<Article>) {
 fun SearchBar(onSearch: (String) -> Unit) {
     var query by remember { mutableStateOf("") }
 
-    Row (modifier = Modifier.fillMaxWidth()) {
+
+    Row(modifier = Modifier.fillMaxWidth()) {
         IconButton(
             onClick = { onSearch(query) },
             content = { Icon(Icons.Filled.Search, "Search") },
@@ -68,9 +67,19 @@ fun SearchBar(onSearch: (String) -> Unit) {
             onValueChange = { query = it },
             placeholder = { Text("Search") },
             keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
             shape = RoundedCornerShape(100.dp),
             singleLine = true
         )
     }
+}
+
+@Composable
+fun ProgressIndicator() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    }
+
 }
