@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,12 +21,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.newsapiapp.ViewModel.NewsLoaderViewModel
 import com.example.newsapiapp.domain.Article
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.gson.Gson
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 class MainActivity : ComponentActivity() {
-    private val newsLoader: NewsLoaderViewModel by viewModels()
+    private val viewModel: NewsLoaderViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,10 +36,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            newsLoader.loadNews()
+            val isRefreshing = viewModel.isRefreshing.collectAsState()
+            val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing.value)
+            viewModel.loadNews()
             NavHost(navController = navController, startDestination = "main") {
                 composable("main") {
-                    Mainscreen(navController = navController)
+                    SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.loadNews() }) {
+                        Mainscreen(navController = navController)
+                    }
                 }
                 composable("filter") {
                     FilterScreen(navController = navController)
@@ -72,7 +79,7 @@ class MainActivity : ComponentActivity() {
             }
         }) {
             Column {
-                val isLoading = newsLoader.isLoading.observeAsState().value!!
+                val isLoading = viewModel.isLoading.observeAsState().value!!
                 if (isLoading) {
                     ProgressIndicator()
                 }
@@ -82,14 +89,13 @@ class MainActivity : ComponentActivity() {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         FilterButton(navController = navController)
-                        SearchBar(onSearch = {}, onFilterClick = {})
+                        SearchBar(onSearch = { viewModel.loadNewsWithSearch(it) })
                     }
                 }
                 ListOfArticles(
-                    list = newsLoader.list.observeAsState().value!!,
+                    list = viewModel.list.observeAsState().value!!,
                     navController = navController
                 )
-                ListOfArticles(list = newsLoader.list.observeAsState().value!!, navController = navController)
             }
         }
     }
@@ -108,27 +114,15 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ButtonFilter(navController = navController, category = "Business")
-                ButtonFilter(navController = navController, category = "General")
-                ButtonFilter(navController = navController, category = "Entertainment")
-                ButtonFilter(navController = navController, category = "Health")
+                ButtonFilter(navController = navController, category = "Business", onFilter = { viewModel.loadNewsWithFilter(it)})
+                ButtonFilter(navController = navController, category = "General", onFilter = { viewModel.loadNewsWithFilter(it)})
+                ButtonFilter(navController = navController, category = "Entertainment", onFilter = { viewModel.loadNewsWithFilter(it)})
+                ButtonFilter(navController = navController, category = "Health", onFilter = { viewModel.loadNewsWithFilter(it)})
             }
         }
     }
 
-    @Composable
-    private fun ButtonFilter(navController: NavController, category: String) {
-        Button(
-            onClick = {
-                navController.popBackStack().also { newsLoader.loadNewsWithFilter(category) }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(text = category, style = MaterialTheme.typography.h5)
-        }
-    }
+
 
 }
 

@@ -18,4 +18,11 @@ interface NewsApi {
         @Query("category") category: String,
         @Query("apiKey") key: String
     ): Response<NewsResponse>
+
+    @GET("top-headlines")
+    suspend fun getNewsSearchQuery(
+        @Query("country") country: String,
+        @Query("q") query: String,
+        @Query("apiKey") category: String,
+    ): Response<NewsResponse>
 }

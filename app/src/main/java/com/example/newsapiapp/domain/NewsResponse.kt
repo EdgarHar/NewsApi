@@ -19,11 +19,11 @@ data class Article(
     val author: String,
     @SerializedName("title")
     val title: String,
-    @SerializedName("url")
+    @SerializedName("urlToImage")
     val urlToImage: String,
-    @SerializedName("description")
-    val description: String,
-)
+    @SerializedName("content")
+    val content: String,
+) : java.io.Serializable
 
 data class Source(
     @SerializedName("id")

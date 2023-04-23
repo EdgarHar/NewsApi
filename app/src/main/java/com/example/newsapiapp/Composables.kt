@@ -10,9 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +36,7 @@ fun DisplayArticle(navController: NavController, article: Article) {
             .padding(16.dp)
             .clickable {
                 val myObjectString = Gson().toJson(article)
-                var encode = URLEncoder.encode(myObjectString, StandardCharsets.UTF_8.toString())
+                val encode = URLEncoder.encode(myObjectString, StandardCharsets.UTF_8.toString())
                 navController.navigate("articleDetails/$encode")
             }
     ) {
@@ -114,7 +112,7 @@ fun DisplayArticleDetails(article: Article, navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = article.description,
+                text = article.content,
                 style = MaterialTheme.typography.body1
             )
         }
@@ -124,60 +122,87 @@ fun DisplayArticleDetails(article: Article, navController: NavController) {
 @Composable
 fun ListOfArticles(list: List<Article>, navController: NavController) {
     LazyColumn {
-        items(list) {
-            DisplayArticle(article = it, navController = navController)
+        if (list.isEmpty()) {
+            item {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "No Results found")
+                }
+            }
+        } else {
+            items(list) {
+                DisplayArticle(article = it, navController = navController)
+            }
         }
     }
 }
 
+
 @Composable
-fun SearchBar(onSearch: (String) -> Unit, onFilterClick: () -> Unit) {
+fun SearchBar(onSearch: (String) -> Unit) {
     var query by remember { mutableStateOf("") }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-            IconButton(
-                onClick = { onSearch(query) },
-                content = { Icon(Icons.Filled.Search, "Search") },
-                modifier = Modifier.padding(10.dp)
-            )
-            TextField(
-                value = query,
-                onValueChange = { query = it },
-                placeholder = { Text("Search") },
-                keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                shape = RoundedCornerShape(100.dp),
-                singleLine = true
-            )
-        }
-    }
-}
-
-@Composable
-fun FilterButton(navController: NavController) {
-    IconButton(onClick = { navController.navigate("filter") }) {
-        Icon(
-            imageVector = Icons.Filled.Settings,
-            contentDescription = "Filter",
+    Row(modifier = Modifier.fillMaxWidth()) {
+        TextField(
+            value = query,
+            onValueChange = { query = it },
+            placeholder = { Text("Search") },
+            keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
+            leadingIcon = {
+                IconButton(onClick = { onSearch(query) }) {
+                    Icon(Icons.Default.Search, "Search")
+                }
+            },
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) {
+                        Icon(Icons.Default.Clear, "Remove")
+                    }
+                }
+            },
             modifier = Modifier
-                .padding(10.dp)
-                .background(Color.Red)
+                .fillMaxWidth()
+                .padding(10.dp),
+            shape = RoundedCornerShape(100.dp),
+            singleLine = true
         )
     }
 }
 
 
 @Composable
+fun FilterButton(navController: NavController) {
+    IconButton(onClick = { navController.navigate("filter") }) {
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = "Filter",
+            modifier = Modifier
+                .padding(10.dp),
+
+        )
+    }
+}
+
+@Composable
+fun ButtonFilter(navController: NavController, category: String, onFilter: (String) -> Unit) {
+    Button(
+        onClick = {
+            navController.popBackStack().also { onFilter(category) }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(text = category, style = MaterialTheme.typography.h5)
+    }
+}
+
+@Composable
 fun ProgressIndicator() {
     Box(modifier = Modifier.fillMaxSize()) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
-
 }
