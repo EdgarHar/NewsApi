@@ -14,16 +14,16 @@ data class NewsResponse(
 
 data class Article(
     @SerializedName("source")
-    val source: Source,
+    val source: Source?,
     @SerializedName("author")
-    val author: String,
+    val author: String?,
     @SerializedName("title")
-    val title: String,
-    @SerializedName("url")
-    val urlToImage: String,
-    @SerializedName("description")
-    val description: String,
-)
+    val title: String?,
+    @SerializedName("urlToImage")
+    val urlToImage: String?,
+    @SerializedName("content")
+    val content: String?,
+) : java.io.Serializable
 
 data class Source(
     @SerializedName("id")

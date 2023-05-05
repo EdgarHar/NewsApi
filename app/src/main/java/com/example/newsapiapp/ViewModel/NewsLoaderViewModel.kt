@@ -9,8 +9,11 @@ import com.example.newsapiapp.data.RetrofitInstance
 import com.example.newsapiapp.domain.Article
 import com.example.newsapiapp.domain.NewsResponse
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
+
 
 class NewsLoaderViewModel : ViewModel() {
     private val _list: MutableLiveData<List<Article>> = MutableLiveData(listOf())
@@ -19,13 +22,37 @@ class NewsLoaderViewModel : ViewModel() {
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val api: NewsApi = RetrofitInstance.api
 
     fun loadNews() {
+        _isLoading.postValue(true)
         viewModelScope.launch {
-            delay(1000)
             _list.postValue(
                 mapToArticles(api.getNews("us", "5189442ea3fd472b94ba50c569f42552"))
+                    ?: listOf()
+            )
+            _isLoading.postValue(false)
+        }
+    }
+
+    fun loadNewsWithFilter(filter: String) {
+        _isLoading.postValue(true)
+        viewModelScope.launch {
+            _list.postValue(
+                mapToArticles(api.getNews("us", filter, "5189442ea3fd472b94ba50c569f42552"))
+                    ?: listOf()
+            )
+            _isLoading.postValue(false)
+        }
+    }
+    fun loadNewsWithSearch(query: String) {
+        _isLoading.postValue(true)
+        viewModelScope.launch {
+            _list.postValue(
+                mapToArticles(api.getNewsSearchQuery("us", query, "5189442ea3fd472b94ba50c569f42552"))
                     ?: listOf()
             )
             _isLoading.postValue(false)
@@ -36,3 +63,4 @@ class NewsLoaderViewModel : ViewModel() {
         return news.body()?.articles
     }
 }
+
