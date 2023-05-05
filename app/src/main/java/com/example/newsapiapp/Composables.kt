@@ -49,10 +49,12 @@ fun DisplayArticle(navController: NavController, article: Article) {
                     .height(150.dp)
                     .fillMaxWidth()
             )
-            Text(
-                text = article.title,
-                modifier = Modifier.padding(16.dp)
-            )
+            article.title?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
 }
@@ -76,18 +78,22 @@ fun DisplayArticleDetails(article: Article, navController: NavController) {
 
         Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = article.author,
-                    style = MaterialTheme.typography.caption,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
+                article.author?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
 
-                Text(
-                    text = article.source.name,
-                    style = MaterialTheme.typography.caption,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
+                article.source?.let {
+                    Text(
+                        text = it.name,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -104,17 +110,21 @@ fun DisplayArticleDetails(article: Article, navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = article.title,
-                style = MaterialTheme.typography.h6
-            )
+            article.title?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.h6
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = article.content,
-                style = MaterialTheme.typography.body1
-            )
+            article.content?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.body1
+                )
+            }
         }
     }
 }

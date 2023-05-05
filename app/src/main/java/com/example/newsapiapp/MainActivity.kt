@@ -19,16 +19,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import checkForInternet
 import com.example.newsapiapp.ViewModel.NewsLoaderViewModel
 import com.example.newsapiapp.domain.Article
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.gson.Gson
+import localSearch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.util.regex.Pattern
 
 class MainActivity : ComponentActivity() {
     private val viewModel: NewsLoaderViewModel by viewModels()
+    private val context = this
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +62,9 @@ class MainActivity : ComponentActivity() {
                 {
                     val articleJson =
                         it.arguments?.getString("article")
-                            .let { URLDecoder.decode(it, StandardCharsets.UTF_8.toString()) }
+                            .let { val encodedArticle = it
+                                val replacedArticle = encodedArticle?.replace(Regex("%"), "%25")
+                                URLDecoder.decode(replacedArticle, StandardCharsets.UTF_8.toString()) }
                     val articleObject = Gson().fromJson(articleJson, Article::class.java)
                     DisplayArticleDetails(article = articleObject, navController = navController)
                 }
@@ -89,7 +95,14 @@ class MainActivity : ComponentActivity() {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         FilterButton(navController = navController)
-                        SearchBar(onSearch = { viewModel.loadNewsWithSearch(it) })
+                        SearchBar(onSearch = {
+                            if (checkForInternet(context)) {
+                                viewModel.loadNewsWithSearch(it)
+                            }
+                            else {
+                                localSearch(viewModel.list.value!!, it)
+                            }
+                        })
                     }
                 }
                 ListOfArticles(
@@ -121,6 +134,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 
 
 
